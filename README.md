@@ -18,6 +18,10 @@ Please modify the `data_root` in any configs you would like to run. We will use 
 
 To train the model, you can run:
 ```
+pip install nvidia-dali-cuda120
+
+python -c "import nvidia.dali; print(nvidia.dali.__version__)"
+
 python train.py configs/culane_res18.py --log_path /path/to/your/work/dir
 ```
 or

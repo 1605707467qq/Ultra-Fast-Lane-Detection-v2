@@ -1,5 +1,5 @@
 import torch
-from model.backbone import resnet
+from model.backbone import resnet,Efficientnet
 import numpy as np
 from utils.common import initialize_weights
 from model.seg_model import SegHead
@@ -22,8 +22,13 @@ class parsingNet(torch.nn.Module):
         self.total_dim = self.dim1 + self.dim2 + self.dim3 + self.dim4
         mlp_mid_dim = 2048
         self.input_dim = input_height // 32 * input_width // 32 * 8
-
-        self.model = resnet(backbone, pretrained=pretrained)
+        self.backbone = backbone
+        if backbone in ['efb0','efv2s']:
+            self.model = Efficientnet(backbone, pretrained=pretrained)
+        elif backbone in ['regy1_6','regy3_2']:
+            self.model = Regnet(backbone, pretrained=pretrained)
+        else:
+            self.model = resnet(backbone, pretrained=pretrained)
 
         # for avg pool experiment
         # self.pool = torch.nn.AdaptiveAvgPool2d(1)
@@ -37,13 +42,20 @@ class parsingNet(torch.nn.Module):
             torch.nn.ReLU(),
             torch.nn.Linear(mlp_mid_dim, self.total_dim),
         )
-        self.pool = torch.nn.Conv2d(512,8,1) if backbone in ['34','18', '34fca'] else torch.nn.Conv2d(2048,8,1)
+        if backbone in ['34','18', '34fca']:
+            self.pool = torch.nn.Conv2d(512,8,1) 
+        elif backbone in ['efb0','efv2s']:
+            self.pool = torch.nn.Conv2d(1280,8,1) 
+        else:
+            torch.nn.Conv2d(2048,8,1)
         if self.use_aux:
             self.seg_head = SegHead(backbone, num_lane_on_row + num_lane_on_col)
         initialize_weights(self.cls)
     def forward(self, x):
-
-        x2,x3,fea = self.model(x)
+        if self.backbone in ['efb0','efv2s']:
+            fea = self.model(x)
+        else:
+            x2,x3,fea = self.model(x)
         if self.use_aux:
             seg_out = self.seg_head(x2, x3,fea)
         fea = self.pool(fea)

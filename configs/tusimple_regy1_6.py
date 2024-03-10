@@ -1,7 +1,7 @@
 dataset= 'Tusimple'
 data_root= 'Tusimple' # Need to be modified before running
 epoch= 100
-batch_size= 4
+batch_size= 8
 optimizer= 'SGD'
 learning_rate= 0.05
 weight_decay= 0.0001
@@ -11,7 +11,7 @@ steps= [50,75]
 gamma= 0.1
 warmup= 'linear'
 warmup_iters= 100
-backbone= '18'
+backbone= 'regy1_6'
 griding_num= 100
 use_aux= False
 sim_loss_w= 0.0

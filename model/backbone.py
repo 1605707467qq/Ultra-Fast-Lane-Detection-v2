@@ -56,3 +56,54 @@ class resnet(torch.nn.Module):
         x3 = self.layer3(x2)
         x4 = self.layer4(x3)
         return x2,x3,x4
+
+from torchvision.models import efficientnet_b0, EfficientNet_B0_Weights,efficientnet_v2_s,EfficientNet_V2_S_Weights
+class Efficientnet(torch.nn.Module):
+    '''
+    代表efficient系列并不是指定模型
+    输入无要求
+    输出1280维度
+    '''
+    def __init__(self,layers, pretrained=False):
+        super(Efficientnet,self).__init__()
+        # mb 7.7GB显存
+        if layers=='efb0':
+            self.model = efficientnet_b0(weights=EfficientNet_B0_Weights.IMAGENET1K_V1) # b0 输出维度为1280
+        elif layers=='efv2s':
+            self.model = efficientnet_v2_s(weights=EfficientNet_V2_S_Weights.IMAGENET1K_V1) # v2_s 输出维度为1280
+        self.features = self.model.features
+        self.avgpool = self.model.avgpool
+        self.classifier = self.model.classifier
+    def forward(self,x):
+        x = self.features(x)
+        # x = self.avgpool(x)
+        # x = torch.squeeze(x, dim=-1)
+        # x = torch.squeeze(x, dim=-1)
+        return x
+from torchvision.models import regnet_y_1_6gf, RegNet_Y_1_6GF_Weights,regnet_y_3_2gf,RegNet_Y_3_2GF_Weights
+class Regnet(torch.nn.Module):
+    '''
+    输入无要求
+    输出7392维度
+    '''
+    def __init__(self,layers, pretrained=False):
+        super(Regnet,self).__init__()
+        # 2.4gb
+        # RegNet_Y_1_6GF_Weights.IMAGENET1K_V2 # 输出888维度
+        # 43.2mb
+        if layers == 'regy1_6':
+            model = regnet_y_1_6gf(weights=RegNet_Y_1_6GF_Weights.IMAGENET1K_V2) # 1.6GF 输出888维度
+        elif layers == 'regy3_2':
+            model = regnet_y_3_2gf(weights=RegNet_Y_3_2GF_Weights.IMAGENET1K_V2) # 3.2GH 输出1512维度
+        self.stem = model.stem
+        self.trunk_output = model.trunk_output
+        self.avgpool = model.avgpool
+    def forward(self,x):
+        x = self.stem(x)
+        # with torch.no_grad():
+        x = self.trunk_output(x)
+        x = self.avgpool(x)
+        x = torch.squeeze(x, dim=-1)
+        x = torch.squeeze(x, dim=-1)
+    
+        return x

@@ -77,7 +77,7 @@ if __name__ == "__main__":
     
     dist_print(datetime.datetime.now().strftime('[%Y/%m/%d %H:%M:%S]') + ' start training...')
     dist_print(cfg)
-    assert cfg.backbone in ['18','34','50','101','152','50next','101next','50wide','101wide', '34fca']
+    assert cfg.backbone in ['18','34','50','101','152','50next','101next','50wide','101wide', '34fca','efb0','efv2s','regy1_6','regy3_2']
 
     train_loader = get_train_loader(cfg)
     net = get_model(cfg)
@@ -113,7 +113,7 @@ if __name__ == "__main__":
     max_res = 0
     res = None
     for epoch in range(resume_epoch, cfg.epoch):
-
+        print(epoch)
         train(net, train_loader, loss_dict, optimizer, scheduler,logger, epoch, metric_dict, cfg.dataset)
         train_loader.reset()
 
