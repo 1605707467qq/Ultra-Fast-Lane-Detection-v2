@@ -1,7 +1,7 @@
 dataset= 'Tusimple'
 data_root= 'Tusimple' # Need to be modified before running
 epoch= 100
-batch_size= 8
+batch_size= 4
 optimizer= 'SGD'
 learning_rate= 0.05
 weight_decay= 0.0001

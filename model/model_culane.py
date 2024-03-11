@@ -1,5 +1,5 @@
 import torch
-from model.backbone import resnet,Efficientnet
+from model.backbone import resnet,Efficientnet,Regnet
 import numpy as np
 from utils.common import initialize_weights
 from model.seg_model import SegHead
@@ -46,6 +46,11 @@ class parsingNet(torch.nn.Module):
             self.pool = torch.nn.Conv2d(512,8,1) 
         elif backbone in ['efb0','efv2s']:
             self.pool = torch.nn.Conv2d(1280,8,1) 
+        elif self.backbone in  ['regy1_6','regy3_2']:
+            if self.backbone =='regy1_6':
+                self.pool = torch.nn.Conv2d(888,8,1) 
+            elif self.backbone =='regy3_2':
+                self.pool = torch.nn.Conv2d(1512,8,1) 
         else:
             torch.nn.Conv2d(2048,8,1)
         if self.use_aux:
@@ -53,6 +58,8 @@ class parsingNet(torch.nn.Module):
         initialize_weights(self.cls)
     def forward(self, x):
         if self.backbone in ['efb0','efv2s']:
+            fea = self.model(x)
+        elif self.backbone in  ['regy1_6','regy3_2']:
             fea = self.model(x)
         else:
             x2,x3,fea = self.model(x)

@@ -102,8 +102,8 @@ class Regnet(torch.nn.Module):
         x = self.stem(x)
         # with torch.no_grad():
         x = self.trunk_output(x)
-        x = self.avgpool(x)
-        x = torch.squeeze(x, dim=-1)
-        x = torch.squeeze(x, dim=-1)
+        # x = self.avgpool(x)
+        # x = torch.squeeze(x, dim=-1)
+        # x = torch.squeeze(x, dim=-1)
     
         return x
