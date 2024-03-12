@@ -85,7 +85,7 @@ def get_test_loader(batch_size, data_root,dataset, distributed, crop_ratio, trai
         sampler = SeqDistributedSampler(test_dataset, shuffle = False)
     else:
         sampler = torch.utils.data.SequentialSampler(test_dataset)
-    loader = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, sampler = sampler, num_workers=4)
+    loader = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, sampler = sampler, num_workers=0)
     return loader
 
 
