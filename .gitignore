@@ -11,4 +11,4 @@ evaluate
 **/dist
 **/*egg-info
 *.lprof
-./tmp
+tmp
