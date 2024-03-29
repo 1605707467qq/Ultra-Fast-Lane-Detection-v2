@@ -116,12 +116,12 @@ if __name__ == "__main__":
         print(epoch)
         train(net, train_loader, loss_dict, optimizer, scheduler,logger, epoch, metric_dict, cfg.dataset)
         train_loader.reset()
+        if epoch>30:
+            res = eval_lane(net, cfg, ep = epoch, logger = logger)
 
-        res = eval_lane(net, cfg, ep = epoch, logger = logger)
-
-        if res is not None and res > max_res:
-            max_res = res
-            save_model(net, optimizer, epoch, work_dir, distributed)
-        logger.add_scalar('CuEval/X',max_res,global_step = epoch)
-
+            if res is not None and res > max_res:
+                max_res = res
+                save_model(net, optimizer, epoch, work_dir, distributed)
+            logger.add_scalar('CuEval/X',max_res,global_step = epoch)
+        torch.cuda.empty_cache()
     logger.close()
